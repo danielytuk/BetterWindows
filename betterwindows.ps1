@@ -1,3 +1,12 @@
+# Import BitsTransfer module for faster downloads
+Import-Module BitsTransfer
+
+# Get the current script directory
+$currentDir = $PSScriptRoot
+if (!$currentDir) {
+    $currentDir = (Get-Location).Path
+}
+
 # Define the URLs and output file names
 $downloads = @(
     @{ Url = "https://github.com/memstechtips/Winhance/releases/latest/download/Winhance.Installer.exe"; File = "Winhance.Installer.exe" },
@@ -7,11 +16,12 @@ $downloads = @(
 # Start downloading files in parallel
 $jobs = @()
 foreach ($download in $downloads) {
+    $destinationPath = Join-Path -Path $currentDir -ChildPath $download.File
     $jobs += Start-Job -ScriptBlock {
         param ($url, $destination)
 
-        # Function to download a file
-        function Download-File {
+        # Function to download a file using BITS
+        function Download-FileFast {
             param (
                 [string]$url,
                 [string]$destination
@@ -19,29 +29,48 @@ foreach ($download in $downloads) {
 
             Write-Host "Downloading $url to $destination..."
             try {
-                Invoke-WebRequest -Uri $url -OutFile $destination -ErrorAction Stop
+                Start-BitsTransfer -Source $url -Destination $destination -DisplayName "Downloading $(Split-Path $destination -Leaf)" -Priority High
                 Write-Host "Downloaded $destination successfully."
+                return $true
             } catch {
-                Write-Host "Failed to download $url"  # Fixed variable reference
-                exit 1
+                Write-Host "Failed to download $url. Falling back to direct download..."
+                try {
+                    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+                    $webClient = New-Object System.Net.WebClient
+                    $webClient.DownloadFile($url, $destination)
+                    Write-Host "Downloaded $destination successfully using fallback method."
+                    return $true
+                } catch {
+                    Write-Host "All download attempts failed for $url"
+                    return $false
+                }
             }
         }
 
         # Call the function to download the file
-        Download-File -url $url -destination $destination
-    } -ArgumentList $download.Url, $download.File
+        Download-FileFast -url $url -destination $destination
+    } -ArgumentList $download.Url, $destinationPath
 }
 
-# Wait for all jobs to complete
-Write-Host "Waiting for downloads to complete..."
-$jobs | Wait-Job
+# Wait for all jobs to complete with timeout
+$timeout = 300 # 5 minutes timeout
+$completedJobs = $jobs | Wait-Job -Timeout $timeout
+if ($completedJobs.Count -lt $jobs.Count) {
+    Write-Host "Some downloads timed out after $timeout seconds"
+    $jobs | Where-Object { $_.State -eq 'Running' } | Stop-Job
+}
 
 # Retrieve job results
-$jobs | ForEach-Object { Receive-Job $_ }
+$jobs | ForEach-Object { 
+    $result = Receive-Job $_ -ErrorAction SilentlyContinue
+    if (-not $result) {
+        Write-Host "Download failed for one of the files"
+    }
+}
 $jobs | Remove-Job
 
 # Create a shortcut to run the command in PowerShell
-$shortcutPath = Join-Path -Path (Get-Location) -ChildPath "WinUtil.lnk"
+$shortcutPath = Join-Path -Path $currentDir -ChildPath "WinUtil.lnk"
 
 # Create the shortcut
 $WshShell = New-Object -ComObject WScript.Shell
@@ -51,6 +80,6 @@ $shortcut.Arguments = "-NoExit -ExecutionPolicy Bypass -Command ""irm 'https://c
 $shortcut.IconLocation = "powershell.exe"
 $shortcut.Save()
 
-clear
+Clear-Host
 Write-Host "Everything to make windows better is done downloading."
 exit
