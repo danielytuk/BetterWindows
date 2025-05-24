@@ -9,7 +9,8 @@ if (!$currentDir) {
 
 # Define the URLs and output file names
 $downloads = @(
-    @{ Url = "https://github.com/ramensoftware/windhawk/releases/latest/download/windhawk_setup.exe"; File = "windhawk_setup.exe" }
+    @{ Url = "https://github.com/ramensoftware/windhawk/releases/latest/download/windhawk_setup.exe"; File = "windhawk_setup.exe" },
+    @{ Url = "https://raw.githubusercontent.com/danielytuk/BetterWindows/refs/heads/main/removeEdge.ps1"; File = "removeEdge.ps1" }
 )
 
 # Start downloading files in parallel
