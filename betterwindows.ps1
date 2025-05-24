@@ -9,7 +9,6 @@ if (!$currentDir) {
 
 # Define the URLs and output file names
 $downloads = @(
-    @{ Url = "https://github.com/memstechtips/Winhance/releases/latest/download/Winhance.Installer.exe"; File = "Winhance.Installer.exe" },
     @{ Url = "https://github.com/ramensoftware/windhawk/releases/latest/download/windhawk_setup.exe"; File = "windhawk_setup.exe" }
 )
 
@@ -76,7 +75,7 @@ $shortcutPath = Join-Path -Path $currentDir -ChildPath "WinUtil.lnk"
 $WshShell = New-Object -ComObject WScript.Shell
 $shortcut = $WshShell.CreateShortcut($shortcutPath)
 $shortcut.TargetPath = "powershell.exe"
-$shortcut.Arguments = "-NoExit -ExecutionPolicy Bypass -Command ""irm 'https://christitus.com/win' | iex"""
+$shortcut.Arguments = "-NoExit -ExecutionPolicy Bypass -Command ""Set-ExecutionPolicy Unrestricted -Scope Process -Force; irm 'https://christitus.com/win' | iex"""
 $shortcut.IconLocation = "powershell.exe"
 $shortcut.Save()
 
