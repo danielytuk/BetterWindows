@@ -6,16 +6,9 @@ BetterWindows is a PowerShell script designed to streamline the process of enhan
 
 The script downloads the following utilities:
 
-1. [**Winhance**](https://github.com/memstechtips/Winhance/): Application designed to optimize and customize your Windows experience.
+1. [**Windhawk**](https://github.com/ramensoftware/windhawk/): Windhawk aims to make it easier to customize Windows programs.
 
-2. [**Windhawk**](https://github.com/ramensoftware/windhawk/): Windhawk aims to make it easier to customize Windows programs.
-
-3. [**Chris Titus Tech's Windows Utility**](https://github.com/ChrisTitusTech/winutil):  Install Programs, Tweaks, Fixes, and Updates
-
-## Features
-
-- **Parallel Downloads**: Downloads Winhance & Windhawk simultaneously to save time.
-- **Shortcut Creation**: Automatically creates a shortcut to run Chris Titus Tech's Windows Utility
+2. [**Chris Titus Tech's Windows Utility**](https://github.com/ChrisTitusTech/winutil):  Install Programs, Tweaks, Fixes, and Updates
 
 ## How to Run
 
@@ -47,7 +40,6 @@ Thank you for your support!
 
 ## Credits
 
-- [Winhance](https://github.com/memstechtips/Winhance)
 - [Windhawk](https://github.com/ramensoftware/windhawk)
 - [Chris Titus Tech's Windows Utility](https://github.com/ChrisTitusTech/winutil)
 
