@@ -21,7 +21,7 @@ To run the script, follow these steps:
    ```
 3. **Download the Script**: Copy the script code into a `.ps1` file, for example, `BetterWindows.ps1` then, execute the script by navigating to its directory in PowerShell/Terminal and running
       ```powershell
-   .\WinUtil.ps1
+   .\betterwindows.ps1
    ```
 5. **or, Alternatively Run the Script**: Execute the script by running:
    ```powershell
